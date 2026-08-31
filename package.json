@@ -1,0 +1,24 @@
+{
+  "name": "backend-challenge",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run src/main.ts",
+    "start:dev": "bun --watch run src/main.ts",
+    "test": "bun test",
+    "test:integration": "bun test test/integration",
+    "test:concurrency": "bun test test/concurrency",
+    "test:load": "bun run test/load/run.ts",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@biomejs/biome": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^7",
+    "decimal.js": "^10.4.3"
+  }
+}
