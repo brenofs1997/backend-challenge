@@ -1,15 +1,26 @@
 # backend-challenge
 
-To install dependencies:
+Distributed Wagering Processor
 
-```bash
+## Setup
+
+\`\`\`bash
 bun install
-```
+docker compose up -d
+bun run start:dev
+\`\`\`
 
-To run:
+## Tests
 
-```bash
-bun run index.ts
-```
+\`\`\`bash
+bun test                 # unit
+bun run test:integration # requires docker compose up
+bun run test:concurrency # requires docker compose up
+\`\`\`
 
-This project was created using `bun init` in bun v1.4.0. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## Structure
+
+- `src/domain` — entities, value objects, business rules (no framework dependencies)
+- `src/application` — use cases and ports
+- `src/infrastructure` — persistence and messaging implementations
+- `src/interfaces` — HTTP controllers and SQS consumers
