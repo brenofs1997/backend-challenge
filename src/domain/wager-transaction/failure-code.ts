@@ -8,4 +8,5 @@ export enum FailureCode {
   CurrencyMismatch = 'CURRENCY_MISMATCH',
   IdempotencyConflict = 'IDEMPOTENCY_CONFLICT',
   InvalidPayload = 'INVALID_PAYLOAD',
+  LedgerEntryNotBalanced = 'LEDGER_ENTRY_NOT_BALANCED'
 }
