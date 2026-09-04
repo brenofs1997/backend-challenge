@@ -9,7 +9,7 @@ import { InvalidTransactionStateError } from '../errors';
 
 export interface CreateWagerTransactionProps {
   id: string;
-  providerId: string;
+  providerId?: string ;
   externalTransactionId: string;
   idempotencyKey: string;
   payloadHash: string;
@@ -20,6 +20,19 @@ export interface CreateWagerTransactionProps {
   kind: WagerTransactionKind;
   money: Money;
   referenceExternalTransactionId?: string;
+  createdAt?: Date ;
+}
+
+export interface CreateOpeningProps {
+  id: string;
+  walletId: string;
+  playerId: string;
+  money: Money;
+  externalTransactionId?: string;
+  idempotencyKey?: string;
+  payloadHash?: string;
+  roundId?: string;
+  gameId?: string;
   createdAt?: Date;
 }
 
@@ -31,9 +44,10 @@ export interface WagerTransactionState extends CreateWagerTransactionProps {
 }
 
 export class WagerTransaction {
+
   private constructor(
     public readonly id: string,
-    public readonly providerId: string,
+    public readonly providerId: string | undefined,
     public readonly externalTransactionId: string,
     public readonly idempotencyKey: string,
     public readonly payloadHash: string,
@@ -76,6 +90,22 @@ export class WagerTransaction {
       props.createdAt ?? new Date(),
       WagerTransactionStatus.Pending,
     );
+  }
+  public static createOpening(props: CreateOpeningProps): WagerTransaction {
+    return WagerTransaction.create({
+      id: props.id,
+      providerId: 'INTERNAL',
+      externalTransactionId: props.externalTransactionId ?? props.walletId,
+      idempotencyKey: props.idempotencyKey ?? `internal-opening:${props.walletId}`,
+      payloadHash: props.payloadHash ?? 'internal-opening',
+      walletId: props.walletId,
+      playerId: props.playerId,
+      roundId: props.roundId ?? 'internal',
+      gameId: props.gameId ?? 'internal',
+      kind: WagerTransactionKind.Opening,
+      money: props.money,
+      createdAt: props.createdAt ?? new Date(),
+    });
   }
 
   public static rehydrate(state: WagerTransactionState): WagerTransaction {

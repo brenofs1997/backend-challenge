@@ -12,15 +12,13 @@ export class WalletController  {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateWalletDto): Promise<WalletResponse> {
-    const initialBalance = dto.initialBalance
-      ? Money.from({ amount: dto.initialBalance, currency: dto.currency })
-      : undefined;
+    const initialBalance = Money.from(dto.initialBalance);
 
     try {
       const { wallet } = await this.createWalletUseCase.execute({
         playerId: dto.playerId,
-        currency: dto.currency,
-        ...(initialBalance !== undefined ? { initialBalance } : {}),
+        currency: dto.initialBalance.currency,
+        initialBalance,
       });
       return toWalletResponse(wallet);
     } catch (error) {

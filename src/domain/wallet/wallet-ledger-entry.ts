@@ -16,10 +16,6 @@ export type LedgerEntryState = CreateLedgerEntryProps;
 
 export class UnbalancedLedgerEntryError extends Error {}
 
-/**
- * Append-only ledger entry. No mutable fields, no transition methods —
- * immutability here is structural (Object.freeze), not a convention.
- */
 export class WalletLedgerEntry {
   private constructor(
     public readonly id: string,
@@ -55,7 +51,6 @@ export class WalletLedgerEntry {
     return entry;
   }
 
-  /** Reconstruction from persistence — assumed already balanced, not revalidated. */
   static rehydrate(state: LedgerEntryState): WalletLedgerEntry {
     return new WalletLedgerEntry(
       state.id,

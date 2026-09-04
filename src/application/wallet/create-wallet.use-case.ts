@@ -5,7 +5,7 @@ import { WagerTransaction } from '../../domain/wager-transaction/wager-transacti
 import { Money } from '../../domain/shared/money';
 import type { WalletRepository } from '../ports/wallet-repository';
 import type { WagerTransactionRepository } from '../ports/wager-transaction-repository';
-import type { WalletLedgerRepository } from '../ports/wallet-ledger-repository';
+import type { WalletLedgerRepository } from '../../application/ports/wallet-ledger-repository';
 import type { UnitOfWork } from '../ports/unit-of-work';
 import type { Clock } from '../ports/clock';
 import type { IdGenerator } from '../ports/id-generator';
@@ -50,7 +50,7 @@ export class CreateWalletUseCase {
       createdAt: now,
     });
 
-    return this.unitOfWork.run(async () => {
+    return this.unitOfWork.runInTransaction(async () => {
       if (!initialBalance.isZero()) {
         await this.recordOpening(wallet, initialBalance, now);
       }
@@ -62,7 +62,6 @@ export class CreateWalletUseCase {
   private async recordOpening(wallet: Wallet, amount: Money, now: Date): Promise<void> {
     const opening = WagerTransaction.createOpening({
       id: this.idGenerator.newId(),
-      providerId: 'internal',
       externalTransactionId: wallet.id,
       idempotencyKey: `internal-opening:${wallet.id}`,
       payloadHash: 'internal-opening',
